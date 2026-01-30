@@ -13,4 +13,77 @@
   <body>
     <div id="root"></div>
   </body>
+<style>
+/* Oculta los contenedores de My Courses y Discover en el header del curso */
+.course-title-lockup .nav-course {
+    display: none !important;
+}
+</style>
+<script>
+  //boton ayuda
+(function () {
+  const NEW_URL = "https://academy.plenumsoftamericas.com/contact";
+  const NEW_TEXT = "Ayuda";
+
+  function fixAyudaLink() {
+    const links = document.querySelectorAll('a.text-gray-700.ml-2');
+
+    for (const link of links) {
+      const rawHref = link.getAttribute("href");
+
+      if (rawHref === "null" || rawHref === "" || rawHref === null) {
+        link.setAttribute("href", NEW_URL);
+        link.setAttribute("target", "_blank");
+        link.setAttribute("rel", "noopener noreferrer");
+	link.textContent = NEW_TEXT;
+        return true;
+      }
+    }
+    return false;
+  }
+
+
+  // Intento inmediato
+  if (fixAyudaLink()) return;
+
+  // Observa cambios del DOM (React)
+  const observer = new MutationObserver(() => {
+    if (fixAyudaLink()) observer.disconnect();
+  });
+
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+})();
+//footer
+(function () {
+  function translateAndClean() {
+    // 2. Traducir Copyrights con una técnica de reemplazo total
+    const copyright = document.querySelector('.copyright-site');
+    if (copyright && copyright.textContent.includes('All Rights Reserved')) {
+      // Usamos innerHTML para forzar el cambio y reemplazamos las dos partes
+      let text = copyright.innerHTML;
+      text = text.replace('Copyrights', 'Derechos de autor');
+      text = text.replace('All Rights Reserved', 'Todos los derechos reservados');
+      copyright.innerHTML = text;
+    }
+  }
+
+  // Ejecución inicial con un pequeño retraso para asegurar que el footer cargó
+  setTimeout(translateAndClean, 500);
+
+  // Observador para cambios del DOM
+  const observer = new MutationObserver((mutations) => {
+    // Solo ejecutamos si hay cambios reales para evitar bucles infinitos
+    translateAndClean();
+  });
+
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+})();
+</script>
+
 </html>

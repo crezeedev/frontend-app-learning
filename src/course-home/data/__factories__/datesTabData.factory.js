@@ -18,7 +18,7 @@ Factory.define('datesTabData')
         description: '',
         learner_has_access: true,
         link: '',
-        title: 'Course Starts',
+        title: 'Inicio de Curso',
         extra_info: null,
       },
       {
@@ -204,7 +204,7 @@ Factory.define('datesTabData')
         description: '',
         learner_has_access: true,
         link: '',
-        title: 'Course Ends',
+        title: 'Fin del curso',
         extra_info: null,
       },
       {

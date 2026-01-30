@@ -39,7 +39,7 @@ Factory.define('courseHomeMetadata')
     Factory.build(
       'tab',
       {
-        title: 'Course',
+        title: 'Curso',
         priority: 0,
         slug: 'courseware',
         type: 'courseware',
@@ -53,7 +53,7 @@ Factory.define('courseHomeMetadata')
     Factory.build(
       'tab',
       {
-        title: 'Discussion',
+        title: 'Discusión',
         priority: 1,
         slug: 'discussion',
         type: 'discussion',
@@ -81,7 +81,7 @@ Factory.define('courseHomeMetadata')
     Factory.build(
       'tab',
       {
-        title: 'Progress',
+        title: 'Progreso',
         priority: 3,
         slug: 'progress',
         type: 'progress',

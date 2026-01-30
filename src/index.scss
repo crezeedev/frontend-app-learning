@@ -38,6 +38,10 @@
   }
 }
 
+.nav-course:has(a[href="https://academy.plenumsoftamericas.com/courses"]) {
+  display: none !important;
+}
+
 .nav-underline-tabs {
   margin: 0 0 -1px;
 

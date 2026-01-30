@@ -15,13 +15,24 @@ import {
 } from './data/api';
 import messages from './messages';
 
+
+const translationsMap = {
+  'Learner': 'Estudiante',
+  'Staff': 'Personal / Staff',
+  'Personal': 'Personal',
+  'Specific Student...': 'Estudiante específico...',
+  'View this course as:': 'Ver este curso como:',
+};
+
+const translate = (text) => translationsMap[text] || text;
+
 class MasqueradeWidget extends Component {
   constructor(props) {
     super(props);
     this.courseId = props.courseId;
     this.state = {
       autoFocus: false,
-      masquerade: 'Staff',
+      masquerade: 'Personal',
       active: {},
       available: [],
       shouldShowUserNameInput: false,
@@ -66,11 +77,12 @@ class MasqueradeWidget extends Component {
     });
   }
 
+// 2. Modificamos getOptions para traducir el nombre en el listado
   getOptions() {
     const options = this.state.available.map((group) => (
       <MasqueradeWidgetOption
         groupId={group.groupId}
-        groupName={group.name}
+        groupName={translate(group.name)} // <--- CAMBIO: Traducción aquí
         key={group.name}
         role={group.role}
         selected={this.state.active}
@@ -98,6 +110,7 @@ class MasqueradeWidget extends Component {
     }));
   }
 
+// 3. Modificamos parseAvailableOptions para traducir el botón principal
   parseAvailableOptions(postData) {
     const data = postData || {};
     const active = data.active || {};
@@ -105,14 +118,14 @@ class MasqueradeWidget extends Component {
     if (active.userName) {
       this.setState({
         autoFocus: false,
-        masquerade: 'Specific Student...',
+        masquerade: translate('Specific Student...'), // <--- CAMBIO
         masqueradeUsername: active.userName,
         shouldShowUserNameInput: true,
       });
     } else if (active.groupName) {
-      this.setState({ masquerade: active.groupName });
+      this.setState({ masquerade: translate(active.groupName) }); // <--- CAMBIO
     } else if (active.role === 'student') {
-      this.setState({ masquerade: 'Learner' });
+      this.setState({ masquerade: translate('Learner') }); // <--- CAMBIO
     }
     return { active, available };
   }
@@ -128,10 +141,10 @@ class MasqueradeWidget extends Component {
     return (
       <div className="flex-grow-1">
         <div className="row">
-          <span className="col-auto col-form-label pl-3">View this course as:</span>
+          <span className="col-auto col-form-label pl-3">Ver este curso como:</span>
           <Dropdown className="flex-shrink-1 mx-1">
             <Dropdown.Toggle id="masquerade-widget-toggle" variant="inverse-outline-primary">
-              {masquerade}
+              {translate(masquerade)}
             </Dropdown.Toggle>
             <Dropdown.Menu>
               {this.getOptions()}

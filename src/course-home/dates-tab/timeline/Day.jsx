@@ -17,6 +17,18 @@ import { useModel } from '../../../generic/model-store';
 import { getBadgeListAndColor } from './badgelist';
 import { isLearnerAssignment } from '../utils';
 
+const DATE_TRANSLATIONS = {
+  'Course Start': 'Inicio del curso',
+  'Course End': 'Fin del curso',
+  'Assignment Due Date': 'Fecha de entrega',
+  'Homework': 'Tarea',
+  'Exam': 'Examen',
+  'due': 'vence', // Para la palabra 'due' que aparece después
+};
+
+const translateDateText = (text) => DATE_TRANSLATIONS[text] || text;
+
+
 const Day = ({
   date,
   first,
@@ -72,7 +84,7 @@ const Day = ({
             <div key={item.title + item.date} className={classNames(textColor, 'small pb-1')} data-testid="dates-item">
               <div>
                 <span className="small">
-                  <span className="font-weight-bold">{item.assignmentType && `${item.assignmentType}: `}{title}</span>
+                  <span className="font-weight-bold">{item.assignmentType && `${translateDateText(item.assignmentType)}: `}{title}</span>
                   {showDueDateTime && (
                     <span>
                       <span className="mx-1">due</span>

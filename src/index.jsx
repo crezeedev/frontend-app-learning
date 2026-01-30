@@ -12,7 +12,6 @@ import { Helmet } from 'react-helmet';
 import { fetchDiscussionTab, fetchLiveTab } from './course-home/data/thunks';
 import DiscussionTab from './course-home/discussion-tab/DiscussionTab';
 
-import messages from './i18n';
 import { UserMessagesProvider } from './generic/user-messages';
 
 import './index.scss';
@@ -35,6 +34,13 @@ import CourseAccessErrorPage from './generic/CourseAccessErrorPage';
 import DecodePageRoute from './decode-page-route';
 import { DECODE_ROUTES, ROUTES } from './constants';
 import PreferencesUnsubscribe from './preferences-unsubscribe';
+
+import messagesEs419 from './es-419.json';
+
+const messages = {
+  'en': require('./en.json'),
+  'es-419': messagesEs419,  // <--- AGREGAR ESTO
+};
 
 subscribe(APP_READY, () => {
   ReactDOM.render(
@@ -176,5 +182,6 @@ initialize({
       }, 'LearnerAppConfig');
     },
   },
-  messages,
+  messages: messages,
+  locale: 'es-419', 
 });

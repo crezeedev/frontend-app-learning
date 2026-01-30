@@ -12,7 +12,17 @@ const CourseTabsNavigation = ({
   activeTabSlug, className, tabs, intl,
 }) => {
   const { show } = useCoursewareSearchState();
+const TAB_TRANSLATIONS = {
+  'Course': 'Curso',
+  'Progress': 'Progreso',
+  'Dates': 'Fechas',
+  'Discussion': 'Discusión',
+  'Instructor': 'Instructor',
+  'Resources': 'Recursos',
+  'Notes': 'Notas',
+};
 
+const translateTab = (text) => TAB_TRANSLATIONS[text] || text;
   return (
     <div id="courseTabsNavigation" className={classNames('course-tabs-navigation', className)}>
       <div className="container-xl">
@@ -28,7 +38,7 @@ const CourseTabsNavigation = ({
                   className={classNames('nav-item flex-shrink-0 nav-link', { active: slug === activeTabSlug })}
                   href={url}
                 >
-                  {title}
+                  {translateTab(title)}
                 </a>
               ))}
             </Tabs>
