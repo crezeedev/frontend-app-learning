@@ -141,7 +141,7 @@ const OutlineTab = ({ intl }) => {
             }}
           />
         </div>
-        <div className="col col-12 col-md-8">
+        <div className="col col-12 col-md-12">
           <AlertList
             topic="outline-course-alerts"
             className="mb-3"
@@ -184,7 +184,7 @@ const OutlineTab = ({ intl }) => {
           )}
         </div>
         {rootCourseId && (
-          <div className="col col-12 col-md-4">
+          <div className="col col-12 col-md-4" style={{display: 'none'}}>
             <ProctoringInfoPanel />
             { /** Defer showing the goal widget until the ProctoringInfoPanel has resolved or has been determined as
              disabled to avoid components bouncing around too much as screen is rendered */ }

@@ -13,12 +13,24 @@
   <body>
     <div id="root"></div>
   </body>
+  <!-- estilos para ocultar botones -->
 <style>
-/* Oculta los contenedores de My Courses y Discover en el header del curso */
-.course-title-lockup .nav-course {
-    display: none !important;
-}
+    /* Oculta los contenedores de My Courses y Discover en el header del curso */
+    .course-title-lockup .nav-course {
+        display: none !important;
+    }
+
+    /*Oculta el boton de Discover solo en este MFE*/
+    .pgn__dropdown.user-dropdown.show
+      .dropdown-menu-right.dropdown-menu.show
+      a.dropdown-item[href*="/courses"] {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        padding: 0 !important;
+    }
 </style>
+<!-- modificar footer y bontes de ayuda -->
 <script>
   //boton ayuda
 (function () {
