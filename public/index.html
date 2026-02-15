@@ -146,5 +146,89 @@
 })();
 
 </script>
+<!-- fechas -->
+<script>
+(function () {
+
+  function translateDashboardDates() {
+
+    const translations = {
+      "Course starts": "Inicio del curso",
+      "Course ends": "Fin del curso",
+      "Assignment due": "Entrega de tarea",
+      "Verification deadline": "Fecha límite de verificación"
+    };
+
+    // Busca todos los textos
+    const elements = document.querySelectorAll('span, div, strong');
+
+    elements.forEach(el => {
+      const text = el.textContent.trim();
+
+      if (translations[text]) {
+        el.textContent = translations[text];
+      }
+    });
+  }
+
+  // Ejecuta después de que cargue el MFE
+  setTimeout(translateDashboardDates, 800);
+
+  // Observa cambios dinámicos (porque el MFE es React)
+  const observer = new MutationObserver(() => {
+    translateDashboardDates();
+  });
+
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+
+})();
+</script>
+
+<!-- powered by -->
+<script>
+(function () {
+
+  function customizeFooterLogos() {
+
+    // 1️⃣ Cambiar texto "Powered by"
+    const poweredByItems = document.querySelectorAll('.logo-list li');
+
+    poweredByItems.forEach(li => {
+      if (li.textContent.trim() === "Powered by") {
+        li.textContent = "Desarrollado por";
+      }
+    });
+
+    // 2️⃣ Cambiar logo de Open edX por logo-crezee.png
+    const logos = document.querySelectorAll('.logo-list img');
+
+    logos.forEach(img => {
+      if (img.src.includes("openedx-logo")) {
+        img.src = "https://onlinelive.universidadriviera.edu.mx/theming/asset/images/logo-crezee.png";
+        img.alt = "Crezee";
+        img.width = 120;
+      }
+    });
+
+  }
+
+  // Ejecutar después de cargar
+  setTimeout(customizeFooterLogos, 800);
+
+  // Observar cambios (porque es React/MFE)
+  const observer = new MutationObserver(() => {
+    customizeFooterLogos();
+  });
+
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+
+})();
+</script>
 
 </html>
