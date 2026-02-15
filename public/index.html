@@ -71,29 +71,8 @@
 //footer
 (function () {
   function translateAndClean() {
-        // ===== 1. Cambiar sección Powered by =====
-    const poweredArea = document.querySelector('.powered-area');
-    if (poweredArea) {
-      poweredArea.innerHTML = `
-        <ul class="logo-list">
-          <li>Desarrollado con</li>
-          <li>
-            <a href="https://edly.io/tutor/" rel="noreferrer" target="_blank">
-              <img src="https://onlinelive.universidadriviera.edu.mx/theming/asset/images/logo-crezee.png"
-                   alt="Plataforma Tutor"
-                   width="57">
-            </a>
-          </li>
-          <li>
-            <a href="https://open.edx.org" rel="noreferrer" target="_blank">
-              <img src="https://onlinelive.universidadriviera.edu.mx/theming/asset/images/openedx-logo.png"
-                   alt="Impulsado por Open edX"
-                   width="79">
-            </a>
-          </li>
-        </ul>
-      `;
-    }
+
+  
     // 2. Traducir Copyrights con una técnica de reemplazo total
     const copyright = document.querySelector('.copyright-site');
     if (copyright && copyright.textContent.includes('All Rights Reserved')) {
