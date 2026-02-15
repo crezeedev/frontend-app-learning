@@ -156,7 +156,8 @@
       "Course starts": "Inicio del curso",
       "Course ends": "Fin del curso",
       "Assignment due": "Entrega de tarea",
-      "Verification deadline": "Fecha límite de verificación"
+      "Verification deadline": "Fecha límite de verificación",
+      "After this date, the course will be archived, which means you can review the course content but can no longer participate in graded assignments or work towards earning a certificate." : "Después de esa fecha, el curso será archivado, lo que significa que podrás revisar el contenido pero ya no podrás participar en trabajos calificados ni trabajar para obtener un certificado."
     };
 
     // Busca todos los textos
@@ -193,7 +194,7 @@
 
   function customizeFooterLogos() {
 
-    // 1️⃣ Cambiar texto "Powered by"
+    // Cambiar texto "Powered by"
     const poweredByItems = document.querySelectorAll('.logo-list li');
 
     poweredByItems.forEach(li => {
@@ -202,11 +203,11 @@
       }
     });
 
-    // 2️⃣ Cambiar logo de Open edX por logo-crezee.png
+    // Cambiar logo de Open edX por logo-crezee.png
     const logos = document.querySelectorAll('.logo-list img');
 
     logos.forEach(img => {
-      if (img.src.includes("openedx-logo")) {
+      if (img.src.includes("tutor-logo")) {
         img.src = "https://onlinelive.universidadriviera.edu.mx/theming/asset/images/logo-crezee.png";
         img.alt = "Crezee";
         img.width = 120;

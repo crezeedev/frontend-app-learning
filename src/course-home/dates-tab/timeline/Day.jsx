@@ -17,21 +17,6 @@ import { useModel } from '../../../generic/model-store';
 import { getBadgeListAndColor } from './badgelist';
 import { isLearnerAssignment } from '../utils';
 
-const DATE_TRANSLATIONS = {
-  'course-start': 'Inicio del curso',
-  'course-end': 'Fin del curso',
-  'assignment-due-date': 'Fecha de entrega',
-  'Course starts': 'Inicio del curso',
-  'Course ends': 'Fin del curso',
-  'Assignment Due Date': 'Fecha de entrega',
-  'Homework': 'Tarea',
-  'Exam': 'Examen',
-};
-
-
-const translateDateText = (text) => DATE_TRANSLATIONS[text] || text;
-
-
 const Day = ({
   date,
   first,
@@ -96,11 +81,7 @@ const Day = ({
             <div key={item.title + item.date} className={classNames(textColor, 'small pb-1')} data-testid="dates-item">
               <div>
                 <span className="small">
-                    <span className="font-weight-bold">
-                      {item.dateType && `${translateDateText(item.dateType)} `}
-                      {item.assignmentType && `${translateDateText(item.assignmentType)}: `}
-                      {title}
-                    </span>
+                  <span className="font-weight-bold">{item.assignmentType && `${item.assignmentType}: `}{title}</span>
                   {showDueDateTime && (
                     <span>
                       <span className="mx-1">Vence</span>
