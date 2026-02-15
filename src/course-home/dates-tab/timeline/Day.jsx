@@ -18,13 +18,16 @@ import { getBadgeListAndColor } from './badgelist';
 import { isLearnerAssignment } from '../utils';
 
 const DATE_TRANSLATIONS = {
-  'Course Start': 'Inicio del curso',
-  'Course End': 'Fin del curso',
+  'course-start': 'Inicio del curso',
+  'course-end': 'Fin del curso',
+  'assignment-due-date': 'Fecha de entrega',
+  'Course starts': 'Inicio del curso',
+  'Course ends': 'Fin del curso',
   'Assignment Due Date': 'Fecha de entrega',
   'Homework': 'Tarea',
   'Exam': 'Examen',
-  'due': 'vence', // Para la palabra 'due' que aparece después
 };
+
 
 const translateDateText = (text) => DATE_TRANSLATIONS[text] || text;
 
@@ -72,6 +75,15 @@ const Day = ({
           {badges}
         </div>
         {items.map((item) => {
+
+            console.log('====================');
+              console.log('DATE ITEM COMPLETO:', item);
+              console.log('dateType:', item.dateType);
+              console.log('assignmentType:', item.assignmentType);
+              console.log('title:', item.title);
+              console.log('date:', item.date);
+            console.log('====================');
+
           const { badges: itemBadges } = getBadgeListAndColor(date, intl, item, items);
 
           const showDueDateTime = item.dateType === 'assignment-due-date';
@@ -84,10 +96,14 @@ const Day = ({
             <div key={item.title + item.date} className={classNames(textColor, 'small pb-1')} data-testid="dates-item">
               <div>
                 <span className="small">
-                  <span className="font-weight-bold">{item.assignmentType && `${translateDateText(item.assignmentType)}: `}{title}</span>
+                    <span className="font-weight-bold">
+                      {item.dateType && `${translateDateText(item.dateType)} `}
+                      {item.assignmentType && `${translateDateText(item.assignmentType)}: `}
+                      {title}
+                    </span>
                   {showDueDateTime && (
                     <span>
-                      <span className="mx-1">due</span>
+                      <span className="mx-1">Vence</span>
                       <FormattedTime
                         value={date}
                         timeZoneName="short"

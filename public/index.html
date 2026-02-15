@@ -71,6 +71,29 @@
 //footer
 (function () {
   function translateAndClean() {
+        // ===== 1. Cambiar sección Powered by =====
+    const poweredArea = document.querySelector('.powered-area');
+    if (poweredArea) {
+      poweredArea.innerHTML = `
+        <ul class="logo-list">
+          <li>Desarrollado con</li>
+          <li>
+            <a href="https://edly.io/tutor/" rel="noreferrer" target="_blank">
+              <img src="https://onlinelive.universidadriviera.edu.mx/theming/asset/images/logo-crezee.png"
+                   alt="Plataforma Tutor"
+                   width="57">
+            </a>
+          </li>
+          <li>
+            <a href="https://open.edx.org" rel="noreferrer" target="_blank">
+              <img src="https://onlinelive.universidadriviera.edu.mx/theming/asset/images/openedx-logo.png"
+                   alt="Impulsado por Open edX"
+                   width="79">
+            </a>
+          </li>
+        </ul>
+      `;
+    }
     // 2. Traducir Copyrights con una técnica de reemplazo total
     const copyright = document.querySelector('.copyright-site');
     if (copyright && copyright.textContent.includes('All Rights Reserved')) {
@@ -79,6 +102,14 @@
       text = text.replace('Copyrights', 'Derechos de autor');
       text = text.replace('All Rights Reserved', 'Todos los derechos reservados');
       copyright.innerHTML = text;
+    }
+
+    const postDiscuss = document.querySelector('.font-style');
+    if(postDiscuss && postDiscuss.textContent.includes('All  posts  sorted by recent activity')){
+      // Usamos innerHTML para forzar el cambio y reemplazamos las dos partes
+      let textDiscuss = postDiscuss.innerHTML;
+      textDiscuss = textDiscuss.replace('All  posts  sorted by recent activity', 'Todas las publicaciones ordenadas por actividad reciente');
+      postDiscuss.innerHTML = textDiscuss;
     }
   }
 
@@ -96,6 +127,45 @@
     subtree: true
   });
 })();
+
+
+//=====================menu learning==========================
+(function () {
+
+  function translateMenu() {
+
+    const translations = {
+      "My Courses": "Mis cursos",
+      "Discover": "Explorar",
+      "Dashboard": "Panel",
+      "Profile": "Perfil",
+      "Account": "Cuenta",
+      "Sign Out": "Cerrar sesión"
+    };
+
+    const dropdownItems = document.querySelectorAll('.dropdown-item');
+
+    dropdownItems.forEach(item => {
+      const text = item.textContent.trim();
+      if (translations[text]) {
+        item.textContent = translations[text];
+      }
+    });
+  }
+
+  setTimeout(translateMenu, 500);
+
+  const observer = new MutationObserver(() => {
+    translateMenu();
+  });
+
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+
+})();
+
 </script>
 
 </html>
