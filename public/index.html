@@ -157,7 +157,9 @@
       "Course ends": "Fin del curso",
       "Assignment due": "Entrega de tarea",
       "Verification deadline": "Fecha límite de verificación",
-      "After this date, the course will be archived, which means you can review the course content but can no longer participate in graded assignments or work towards earning a certificate." : "Después de esa fecha, el curso será archivado, lo que significa que podrás revisar el contenido pero ya no podrás participar en trabajos calificados ni trabajar para obtener un certificado."
+      "After this date, the course will be archived, which means you can review the course content but can no longer participate in graded assignments or work towards earning a certificate." : "Después de esa fecha, el curso será archivado, lo que significa que podrás revisar el contenido pero ya no podrás participar en trabajos calificados ni trabajar para obtener un certificado.",
+      "This course is archived, which means you can review course content but it is no longer active." : "Este curso está archivado, lo que significa que puedes revisar el contenido del curso, pero ya no está activo.",
+      "After the course ends, the course content will be archived and no longer active." : "Después de que termine el curso, el contenido del curso será archivado y ya no estará activo."
     };
 
     // Busca todos los textos
@@ -200,6 +202,14 @@
     poweredByItems.forEach(li => {
       if (li.textContent.trim() === "Powered by") {
         li.textContent = "Desarrollado por";
+      }
+    });
+
+    const alertsLearning = document.querySelectorAll('.alert-message-content');
+
+    alertsLearning.forEach(al => {
+      if(al.textContent.trim() === "This section is a prerequisite. You must complete this section in order to unlock additional content."){
+        al.textContent = "Esta sección es un requisito previo. Debes completar esta sección para desbloquear contenido adicional.";
       }
     });
 
