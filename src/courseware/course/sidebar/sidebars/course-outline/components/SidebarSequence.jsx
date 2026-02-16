@@ -33,13 +33,22 @@ const SidebarSequence = ({
   const activeSequenceId = useSelector(getSequenceId);
   const isActiveSequence = id === activeSequenceId;
 
+  function translateTitle(text) {
+  if (!text) return text;
+
+  return text
+    .replace(/\b1 Question\b/g, '1 Pregunta')
+    .replace(/\b(\d+) Questions\b/g, '$1 Preguntas');
+}
+
+
   const sectionTitle = (
     <>
       <div className="col-auto p-0" style={{ fontSize: '1.1rem' }}>
         <CompletionIcon completionStat={completionStat} />
       </div>
       <div className="col-9 d-flex flex-column flex-grow-1 ml-3 mr-auto p-0 text-left">
-        <span className="align-middle text-dark-500">{title}</span>
+        <span className="align-middle text-dark-500">{translateTitle(title)}</span>
         {specialExamInfo && <span className="align-middle small text-muted">{specialExamInfo}</span>}
         <span className="sr-only">
           , {intl.formatMessage(complete
