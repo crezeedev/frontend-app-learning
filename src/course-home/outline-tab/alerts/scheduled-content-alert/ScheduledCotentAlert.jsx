@@ -15,13 +15,12 @@ const ScheduledContentAlert = ({ payload }) => {
           <Alert.Heading>
             <FormattedMessage
               id="learning.outline.alert.scheduled-content.heading"
-              defaultMessage="More content is coming soon!"
+              defaultMessage="¡Próximamente habrá más contenido!"
             />
           </Alert.Heading>
           <FormattedMessage
             id="learning.outline.alert.scheduled-content.body"
-            defaultMessage="This course will have more content released at a future date. Look out for email updates or check back on this course for updates."
-          />
+            defaultMessage="Este curso tendrá más contenido próximamente. Esté atento a las actualizaciones por correo electrónico o consulte este curso para obtener más información."          />
         </div>
         <div className="flex-grow-0 pt-3 pt-lg-0">
           {datesTabLink && (
@@ -30,7 +29,7 @@ const ScheduledContentAlert = ({ payload }) => {
             >
               <FormattedMessage
                 id="learning.outline.alert.scheduled-content.button"
-                defaultMessage="View Course Schedule"
+                defaultMessage="Ver el horario del curso"
               />
             </Button>
           )}
