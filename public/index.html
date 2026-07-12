@@ -243,26 +243,41 @@
 </script>
 
 <script>
-  (function () {
+(function () {
 
   function translateQuestions() {
 
-    document.querySelectorAll('a, span, div, small, strong').forEach(el => {
+    const elements = document.querySelectorAll('a, span, div, small, strong');
 
-      if (el.children.length) return;
+    elements.forEach(el => {
 
-      el.textContent = el.textContent.replace(
-        /(\d+)\s+Question(s)?\b/g,
-        (_, num, plural) => `${num} ${plural ? 'Preguntas' : 'Pregunta'}`
-      );
+      if (el.children.length > 0) return;
+
+      let text = el.textContent;
+
+      // 1 Question -> 1 Pregunta
+      text = text.replace(/(\d+)\s+Question\b/g, '$1 Pregunta');
+
+      // 2 Questions -> 2 Preguntas
+      text = text.replace(/(\d+)\s+Questions\b/g, '$1 Preguntas');
+
+      if (text !== el.textContent) {
+        el.textContent = text;
+      }
 
     });
 
   }
 
+  // Primera ejecución
   setTimeout(translateQuestions, 800);
 
-  new MutationObserver(translateQuestions).observe(document.body, {
+  // React/MFE
+  const observer = new MutationObserver(() => {
+    translateQuestions();
+  });
+
+  observer.observe(document.body, {
     childList: true,
     subtree: true
   });
