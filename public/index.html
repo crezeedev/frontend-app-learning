@@ -242,4 +242,32 @@
 })();
 </script>
 
+<script>
+  (function () {
+
+  function translateQuestions() {
+
+    document.querySelectorAll('a, span, div, small, strong').forEach(el => {
+
+      if (el.children.length) return;
+
+      el.textContent = el.textContent.replace(
+        /(\d+)\s+Question(s)?\b/g,
+        (_, num, plural) => `${num} ${plural ? 'Preguntas' : 'Pregunta'}`
+      );
+
+    });
+
+  }
+
+  setTimeout(translateQuestions, 800);
+
+  new MutationObserver(translateQuestions).observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+
+})();
+</script>
+
 </html>
