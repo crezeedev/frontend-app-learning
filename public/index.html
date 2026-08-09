@@ -288,229 +288,472 @@
 <script>
 (function () {
 
-  function translateQuestions() {
+    console.log('[Open edX ES] Iniciando traducción...');
 
-    // Elementos donde Open edX puede insertar los textos
-    const elements = document.querySelectorAll(
-      'a, span, div, small, strong, button, label, h1, h2, h3, h4, p'
+    const translations = [
+
+        // ==========================================
+        // TIPOS DE PREGUNTA
+        // ==========================================
+
+        [/^Single select$/i, 'Selección única'],
+        [/^Multiple select$/i, 'Selección múltiple'],
+        [/^Single choice$/i, 'Opción única'],
+        [/^Multiple choice$/i, 'Opción múltiple'],
+        [/^Dropdown$/i, 'Lista desplegable'],
+        [/^Text input$/i, 'Entrada de texto'],
+        [/^Numerical input$/i, 'Entrada numérica'],
+
+        // ==========================================
+        // QUESTION
+        // ==========================================
+
+        [/^Question$/i, 'Pregunta'],
+
+        [/^Question\s+(\d+)$/i, 'Pregunta $1'],
+
+        [/^(\d+)\s+Question$/i, '$1 Pregunta'],
+
+        [/^(\d+)\s+Questions$/i, '$1 Preguntas'],
+
+        // ==========================================
+        // RESULTADOS
+        // ==========================================
+
+        [/^Correct$/i, 'Correcta'],
+        [/^Incorrect$/i, 'Incorrecta'],
+
+        [/^Correct answer$/i, 'Respuesta correcta'],
+        [/^Incorrect answer$/i, 'Respuesta incorrecta'],
+
+        [/^This answer is correct\.$/i, 'Esta respuesta es correcta.'],
+        [/^This answer is incorrect\.$/i, 'Esta respuesta es incorrecta.'],
+
+        // ==========================================
+        // RESULTADO + PUNTOS
+        // ==========================================
+
+        /^Correct\s+(\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)\s*points?$/i,
+        /^Incorrect\s+(\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)\s*points?$/i,
+
+        // ==========================================
+        // BOTONES
+        // ==========================================
+
+        [/^Show answer$/i, 'Mostrar respuesta'],
+        [/^Hide answer$/i, 'Ocultar respuesta'],
+
+        [/^Submit$/i, 'Enviar'],
+        [/^Submitting$/i, 'Enviando'],
+
+        [/^Review$/i, 'Revisar'],
+
+        [/^Save$/i, 'Guardar'],
+        [/^Reset$/i, 'Restablecer'],
+
+        // ==========================================
+        // MENSAJES
+        // ==========================================
+
+        [
+            /^Answers are displayed within the problem$/i,
+            'Las respuestas se muestran dentro de la pregunta'
+        ],
+
+        [
+            /^Some problems have options such as save, reset, hints, or show answer\. These options follow the Submit button\.$/i,
+            'Algunas preguntas tienen opciones como guardar, restablecer, pistas o mostrar respuesta. Estas opciones aparecen después del botón Enviar.'
+        ],
+
+        // ==========================================
+        // PUNTOS
+        // ==========================================
+
+        [
+            /^(\d+(?:\.\d+)?)\s+point$/i,
+            '$1 punto'
+        ],
+
+        [
+            /^(\d+(?:\.\d+)?)\s+points$/i,
+            '$1 puntos'
+        ]
+
+    ];
+
+
+    // ==================================================
+    // TRADUCIR TEXTO
+    // ==================================================
+
+    function translateText(text) {
+
+        if (!text) {
+            return text;
+        }
+
+        let value = text.trim();
+
+        if (!value) {
+            return text;
+        }
+
+
+        // ------------------------------------------
+        // Casos especiales de Correct X/X point
+        // ------------------------------------------
+
+        let match = value.match(
+            /^Correct\s+(\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)\s*points?$/i
+        );
+
+        if (match) {
+            return value.replace(
+                /^Correct\s+(\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)\s*points?$/i,
+                'Correcta $1/$2 punto'
+            );
+        }
+
+
+        match = value.match(
+            /^Incorrect\s+(\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)\s*points?$/i
+        );
+
+        if (match) {
+            return value.replace(
+                /^Incorrect\s+(\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)\s*points?$/i,
+                'Incorrecta $1/$2 punto'
+            );
+        }
+
+
+        // ------------------------------------------
+        // Traducciones normales
+        // ------------------------------------------
+
+        for (const item of translations) {
+
+            if (!Array.isArray(item)) {
+                continue;
+            }
+
+            const regex = item[0];
+            const replacement = item[1];
+
+            if (regex.test(value)) {
+
+                return value.replace(
+                    regex,
+                    replacement
+                );
+
+            }
+
+        }
+
+        return text;
+    }
+
+
+    // ==================================================
+    // RECORRER TODOS LOS TEXT NODES
+    // ==================================================
+
+    function translateTextNodes(root) {
+
+        if (!root) {
+            return;
+        }
+
+        const walker = document.createTreeWalker(
+            root,
+            NodeFilter.SHOW_TEXT,
+            {
+                acceptNode: function (node) {
+
+                    // Ignorar scripts y estilos
+                    const parent = node.parentElement;
+
+                    if (!parent) {
+                        return NodeFilter.FILTER_REJECT;
+                    }
+
+                    const tag = parent.tagName.toLowerCase();
+
+                    if (
+                        tag === 'script' ||
+                        tag === 'style' ||
+                        tag === 'noscript'
+                    ) {
+                        return NodeFilter.FILTER_REJECT;
+                    }
+
+                    return NodeFilter.FILTER_ACCEPT;
+                }
+            }
+        );
+
+
+        const nodes = [];
+
+        let node;
+
+        while (node = walker.nextNode()) {
+            nodes.push(node);
+        }
+
+
+        nodes.forEach(function (textNode) {
+
+            const original = textNode.nodeValue;
+
+            const translated = translateText(original);
+
+            if (translated !== original) {
+
+                console.log(
+                    '[Open edX ES]',
+                    original.trim(),
+                    '→',
+                    translated.trim()
+                );
+
+                textNode.nodeValue = translated;
+            }
+
+        });
+
+    }
+
+
+    // ==================================================
+    // ATRIBUTOS
+    // ==================================================
+
+    function translateAttributes() {
+
+        // aria-label
+        document.querySelectorAll('[aria-label]').forEach(function (el) {
+
+            const original = el.getAttribute('aria-label');
+
+            if (!original) {
+                return;
+            }
+
+            const translated = translateText(original);
+
+            if (translated !== original) {
+                el.setAttribute(
+                    'aria-label',
+                    translated
+                );
+            }
+
+        });
+
+
+        // title
+        document.querySelectorAll('[title]').forEach(function (el) {
+
+            const original = el.getAttribute('title');
+
+            if (!original) {
+                return;
+            }
+
+            const translated = translateText(original);
+
+            if (translated !== original) {
+                el.setAttribute(
+                    'title',
+                    translated
+                );
+            }
+
+        });
+
+
+        // data-tooltip
+        document.querySelectorAll('[data-tooltip]').forEach(function (el) {
+
+            const original = el.getAttribute('data-tooltip');
+
+            if (!original) {
+                return;
+            }
+
+            const translated = translateText(original);
+
+            if (translated !== original) {
+                el.setAttribute(
+                    'data-tooltip',
+                    translated
+                );
+            }
+
+        });
+
+
+        // data-submitting
+        document.querySelectorAll('[data-submitting]').forEach(function (el) {
+
+            const original = el.getAttribute('data-submitting');
+
+            if (!original) {
+                return;
+            }
+
+            const translated = translateText(original);
+
+            if (translated !== original) {
+                el.setAttribute(
+                    'data-submitting',
+                    translated
+                );
+            }
+
+        });
+
+    }
+
+
+    // ==================================================
+    // TRADUCCIÓN ESPECÍFICA DEL PROBLEM
+    // ==================================================
+
+    function translateProblem() {
+
+        // Encabezado:
+        // Single select
+        document.querySelectorAll(
+            '.problem-header'
+        ).forEach(function (el) {
+
+            const original = el.textContent.trim();
+
+            const translated = translateText(original);
+
+            if (translated !== original) {
+
+                el.textContent = translated;
+
+            }
+
+        });
+
+
+        // Show answer
+        document.querySelectorAll(
+            '.show-label'
+        ).forEach(function (el) {
+
+            const original = el.textContent.trim();
+
+            const translated = translateText(original);
+
+            if (translated !== original) {
+
+                el.textContent = translated;
+
+            }
+
+        });
+
+
+        // Correct / Incorrect
+        document.querySelectorAll(
+            '.choicegroup_correct .sr, .status .sr'
+        ).forEach(function (el) {
+
+            const original = el.textContent.trim();
+
+            const translated = translateText(original);
+
+            if (translated !== original) {
+
+                el.textContent = translated;
+
+            }
+
+        });
+
+    }
+
+
+    // ==================================================
+    // FUNCIÓN PRINCIPAL
+    // ==================================================
+
+    function translateOpenEdx() {
+
+        try {
+
+            translateTextNodes(document.body);
+
+            translateAttributes();
+
+            translateProblem();
+
+        } catch (error) {
+
+            console.error(
+                '[Open edX ES] Error:',
+                error
+            );
+
+        }
+
+    }
+
+
+    // ==================================================
+    // EJECUCIONES INICIALES
+    // ==================================================
+
+    translateOpenEdx();
+
+    setTimeout(translateOpenEdx, 300);
+    setTimeout(translateOpenEdx, 800);
+    setTimeout(translateOpenEdx, 1500);
+    setTimeout(translateOpenEdx, 3000);
+    setTimeout(translateOpenEdx, 5000);
+
+
+    // ==================================================
+    // OBSERVER PARA REACT / MFE / OPENEDX
+    // ==================================================
+
+    const observer = new MutationObserver(function () {
+
+        translateOpenEdx();
+
+    });
+
+
+    observer.observe(document.body, {
+
+        childList: true,
+        subtree: true,
+        characterData: true
+
+    });
+
+
+    // ==================================================
+    // RESPALDO
+    // ==================================================
+
+    setInterval(function () {
+
+        translateOpenEdx();
+
+    }, 3000);
+
+
+    console.log(
+        '[Open edX ES] Traducción activada correctamente.'
     );
-
-    elements.forEach(el => {
-
-      // Evitar modificar elementos que contienen otros elementos
-      if (el.children.length > 0) return;
-
-      let text = el.textContent.trim();
-
-      if (!text) return;
-
-      let translated = text;
-
-      // ==========================================
-      // PREGUNTAS
-      // ==========================================
-
-      // Question 1 -> Pregunta 1
-      translated = translated.replace(
-        /^Question\s+(\d+)$/i,
-        'Pregunta $1'
-      );
-
-      // 1 Question -> 1 Pregunta
-      translated = translated.replace(
-        /^(\d+)\s+Question$/i,
-        '$1 Pregunta'
-      );
-
-      // 2 Questions -> 2 Preguntas
-      translated = translated.replace(
-        /^(\d+)\s+Questions$/i,
-        '$1 Preguntas'
-      );
-
-      // ==========================================
-      // RESPUESTAS
-      // ==========================================
-
-      // Correct -> Correcta
-      translated = translated.replace(
-        /^correct$/i,
-        'Correcta'
-      );
-
-      // Incorrect -> Incorrecta
-      translated = translated.replace(
-        /^incorrect$/i,
-        'Incorrecta'
-      );
-
-      // ==========================================
-      // RESULTADOS
-      // ==========================================
-
-      // Correct answer -> Respuesta correcta
-      translated = translated.replace(
-        /^Correct answer$/i,
-        'Respuesta correcta'
-      );
-
-      // Incorrect answer -> Respuesta incorrecta
-      translated = translated.replace(
-        /^Incorrect answer$/i,
-        'Respuesta incorrecta'
-      );
-
-      // This answer is correct. -> Esta respuesta es correcta.
-      translated = translated.replace(
-        /^This answer is correct\.$/i,
-        'Esta respuesta es correcta.'
-      );
-
-      // This answer is incorrect. -> Esta respuesta es incorrecta.
-      translated = translated.replace(
-        /^This answer is incorrect\.$/i,
-        'Esta respuesta es incorrecta.'
-      );
-
-      // ==========================================
-      // BOTONES
-      // ==========================================
-
-      // Show answer -> Mostrar respuesta
-      translated = translated.replace(
-        /^Show answer$/i,
-        'Mostrar respuesta'
-      );
-
-
-      // Submitting -> Enviando
-      translated = translated.replace(
-        /^Submitting$/i,
-        'Enviando'
-      );
-
-      // Review -> Revisar
-      translated = translated.replace(
-        /^Review$/i,
-        'Revisar'
-      );
-
-      // ==========================================
-      // MENSAJES
-      // ==========================================
-
-      // Answers are displayed within the problem
-      translated = translated.replace(
-        /^Answers are displayed within the problem$/i,
-        'Las respuestas se muestran dentro de la pregunta'
-      );
-
-      // ==========================================
-      // PUNTUACIÓN
-      // ==========================================
-
-      // 1 point -> 1 punto
-      translated = translated.replace(
-        /^(\d+(?:\.\d+)?)\s+points?$/i,
-        '$1 punto'
-      );
-
-      // Si cambió el texto, actualizarlo
-      if (translated !== text) {
-        el.textContent = translated;
-      }
-
-    });
-
-
-    // ==========================================
-    // ATTRIBUTES
-    // ==========================================
-
-    // Algunos textos de Open edX vienen en atributos
-    // como aria-label, title o data-tooltip.
-
-    document.querySelectorAll('[aria-label]').forEach(el => {
-
-      const value = el.getAttribute('aria-label');
-
-      if (!value) return;
-
-      let translated = value;
-
-      translated = translated.replace(
-        /^Question\s+(\d+)$/i,
-        'Pregunta $1'
-      );
-
-      translated = translated.replace(
-        /^Question$/i,
-        'Pregunta'
-      );
-
-      if (translated !== value) {
-        el.setAttribute('aria-label', translated);
-      }
-
-    });
-
-
-    // data-tooltip
-    document.querySelectorAll('[data-tooltip]').forEach(el => {
-
-      const value = el.getAttribute('data-tooltip');
-
-      if (!value) return;
-
-      let translated = value;
-
-      translated = translated.replace(
-        /^This answer is correct\.$/i,
-        'Esta respuesta es correcta.'
-      );
-
-      translated = translated.replace(
-        /^This answer is incorrect\.$/i,
-        'Esta respuesta es incorrecta.'
-      );
-
-      if (translated !== value) {
-        el.setAttribute('data-tooltip', translated);
-      }
-
-    });
-
-  }
-
-
-  // ==========================================
-  // PRIMERA EJECUCIÓN
-  // ==========================================
-
-  setTimeout(translateQuestions, 500);
-  setTimeout(translateQuestions, 1500);
-  setTimeout(translateQuestions, 3000);
-
-
-  // ==========================================
-  // REACT / MFE / OPENEDX
-  // ==========================================
-
-  const observer = new MutationObserver(() => {
-    translateQuestions();
-  });
-
-  observer.observe(document.body, {
-    childList: true,
-    subtree: true
-  });
-
-
-  // ==========================================
-  // EJECUCIÓN PERIÓDICA DE RESPALDO
-  // ==========================================
-
-  setInterval(translateQuestions, 2000);
 
 })();
 </script>
