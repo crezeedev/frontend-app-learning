@@ -288,103 +288,44 @@
 <script>
 (function () {
 
-    console.log('[Open edX ES] Iniciando traducción...');
+    console.log('[TRADUCTOR OPENEDX] Iniciado');
 
-    const translations = [
+    const translations = {
+        'single select': 'Selección única',
+        'multiple select': 'Selección múltiple',
+        'single choice': 'Opción única',
+        'multiple choice': 'Opción múltiple',
 
-        // ==========================================
-        // TIPOS DE PREGUNTA
-        // ==========================================
+        'question': 'Pregunta',
+        'questions': 'Preguntas',
 
-        [/^Single select$/i, 'Selección única'],
-        [/^Multiple select$/i, 'Selección múltiple'],
-        [/^Single choice$/i, 'Opción única'],
-        [/^Multiple choice$/i, 'Opción múltiple'],
-        [/^Dropdown$/i, 'Lista desplegable'],
-        [/^Text input$/i, 'Entrada de texto'],
-        [/^Numerical input$/i, 'Entrada numérica'],
+        'correct': 'Correcta',
+        'incorrect': 'Incorrecta',
 
-        // ==========================================
-        // QUESTION
-        // ==========================================
+        'correct answer': 'Respuesta correcta',
+        'incorrect answer': 'Respuesta incorrecta',
 
-        [/^Question$/i, 'Pregunta'],
+        'show answer': 'Mostrar respuesta',
+        'hide answer': 'Ocultar respuesta',
 
-        [/^Question\s+(\d+)$/i, 'Pregunta $1'],
+        'submit': 'Enviar',
+        'submitting': 'Enviando',
 
-        [/^(\d+)\s+Question$/i, '$1 Pregunta'],
+        'review': 'Revisar',
 
-        [/^(\d+)\s+Questions$/i, '$1 Preguntas'],
+        'save': 'Guardar',
+        'reset': 'Restablecer',
 
-        // ==========================================
-        // RESULTADOS
-        // ==========================================
+        'this answer is correct.':
+            'Esta respuesta es correcta.',
 
-        [/^Correct$/i, 'Correcta'],
-        [/^Incorrect$/i, 'Incorrecta'],
+        'this answer is incorrect.':
+            'Esta respuesta es incorrecta.',
 
-        [/^Correct answer$/i, 'Respuesta correcta'],
-        [/^Incorrect answer$/i, 'Respuesta incorrecta'],
-
-        [/^This answer is correct\.$/i, 'Esta respuesta es correcta.'],
-        [/^This answer is incorrect\.$/i, 'Esta respuesta es incorrecta.'],
-
-        // ==========================================
-        // RESULTADO + PUNTOS
-        // ==========================================
-
-        /^Correct\s+(\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)\s*points?$/i,
-        /^Incorrect\s+(\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)\s*points?$/i,
-
-        // ==========================================
-        // BOTONES
-        // ==========================================
-
-        [/^Show answer$/i, 'Mostrar respuesta'],
-        [/^Hide answer$/i, 'Ocultar respuesta'],
-
-        [/^Submit$/i, 'Enviar'],
-        [/^Submitting$/i, 'Enviando'],
-
-        [/^Review$/i, 'Revisar'],
-
-        [/^Save$/i, 'Guardar'],
-        [/^Reset$/i, 'Restablecer'],
-
-        // ==========================================
-        // MENSAJES
-        // ==========================================
-
-        [
-            /^Answers are displayed within the problem$/i,
+        'answers are displayed within the problem':
             'Las respuestas se muestran dentro de la pregunta'
-        ],
+    };
 
-        [
-            /^Some problems have options such as save, reset, hints, or show answer\. These options follow the Submit button\.$/i,
-            'Algunas preguntas tienen opciones como guardar, restablecer, pistas o mostrar respuesta. Estas opciones aparecen después del botón Enviar.'
-        ],
-
-        // ==========================================
-        // PUNTOS
-        // ==========================================
-
-        [
-            /^(\d+(?:\.\d+)?)\s+point$/i,
-            '$1 punto'
-        ],
-
-        [
-            /^(\d+(?:\.\d+)?)\s+points$/i,
-            '$1 puntos'
-        ]
-
-    ];
-
-
-    // ==================================================
-    // TRADUCIR TEXTO
-    // ==================================================
 
     function translateText(text) {
 
@@ -392,72 +333,165 @@
             return text;
         }
 
-        let value = text.trim();
+        const original = text;
+        const clean = text.trim();
+        const lower = clean.toLowerCase();
 
-        if (!value) {
-            return text;
+        // ==========================================
+        // TEXTOS EXACTOS
+        // ==========================================
+
+        if (translations[lower]) {
+
+            return original.replace(
+                clean,
+                translations[lower]
+            );
+
         }
 
 
-        // ------------------------------------------
-        // Casos especiales de Correct X/X point
-        // ------------------------------------------
+        // ==========================================
+        // Question 1
+        // ==========================================
 
-        let match = value.match(
-            /^Correct\s+(\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)\s*points?$/i
+        let match = clean.match(
+            /^Question\s+(\d+)$/i
         );
 
         if (match) {
-            return value.replace(
-                /^Correct\s+(\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)\s*points?$/i,
-                'Correcta $1/$2 punto'
+
+            return original.replace(
+                clean,
+                'Pregunta ' + match[1]
             );
+
         }
 
 
-        match = value.match(
-            /^Incorrect\s+(\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)\s*points?$/i
+        // ==========================================
+        // 1 Question
+        // ==========================================
+
+        match = clean.match(
+            /^(\d+)\s+Question$/i
         );
 
         if (match) {
-            return value.replace(
-                /^Incorrect\s+(\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)\s*points?$/i,
-                'Incorrecta $1/$2 punto'
+
+            return original.replace(
+                clean,
+                match[1] + ' Pregunta'
             );
+
+        }
+
+
+        // ==========================================
+        // 2 Questions
+        // ==========================================
+
+        match = clean.match(
+            /^(\d+)\s+Questions$/i
+        );
+
+        if (match) {
+
+            return original.replace(
+                clean,
+                match[1] + ' Preguntas'
+            );
+
         }
 
 
-        // ------------------------------------------
-        // Traducciones normales
-        // ------------------------------------------
+        // ==========================================
+        // Correct 1/1 point
+        // ==========================================
 
-        for (const item of translations) {
+        match = clean.match(
+            /^Correct\s+(\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)\s+points?$/i
+        );
 
-            if (!Array.isArray(item)) {
-                continue;
-            }
+        if (match) {
 
-            const regex = item[0];
-            const replacement = item[1];
-
-            if (regex.test(value)) {
-
-                return value.replace(
-                    regex,
-                    replacement
-                );
-
-            }
+            return original.replace(
+                clean,
+                'Correcta ' +
+                match[1] +
+                '/' +
+                match[2] +
+                ' punto'
+            );
 
         }
+
+
+        // ==========================================
+        // Incorrect 0/1 point
+        // ==========================================
+
+        match = clean.match(
+            /^Incorrect\s+(\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)\s+points?$/i
+        );
+
+        if (match) {
+
+            return original.replace(
+                clean,
+                'Incorrecta ' +
+                match[1] +
+                '/' +
+                match[2] +
+                ' punto'
+            );
+
+        }
+
+
+        // ==========================================
+        // 1 point
+        // ==========================================
+
+        match = clean.match(
+            /^(\d+(?:\.\d+)?)\s+point$/i
+        );
+
+        if (match) {
+
+            return original.replace(
+                clean,
+                match[1] + ' punto'
+            );
+
+        }
+
+
+        // ==========================================
+        // 2 points
+        // ==========================================
+
+        match = clean.match(
+            /^(\d+(?:\.\d+)?)\s+points$/i
+        );
+
+        if (match) {
+
+            return original.replace(
+                clean,
+                match[1] + ' puntos'
+            );
+
+        }
+
 
         return text;
     }
 
 
-    // ==================================================
-    // RECORRER TODOS LOS TEXT NODES
-    // ==================================================
+    // =================================================
+    // TRADUCIR NODOS DE TEXTO
+    // =================================================
 
     function translateTextNodes(root) {
 
@@ -467,38 +501,32 @@
 
         const walker = document.createTreeWalker(
             root,
-            NodeFilter.SHOW_TEXT,
-            {
-                acceptNode: function (node) {
-
-                    // Ignorar scripts y estilos
-                    const parent = node.parentElement;
-
-                    if (!parent) {
-                        return NodeFilter.FILTER_REJECT;
-                    }
-
-                    const tag = parent.tagName.toLowerCase();
-
-                    if (
-                        tag === 'script' ||
-                        tag === 'style' ||
-                        tag === 'noscript'
-                    ) {
-                        return NodeFilter.FILTER_REJECT;
-                    }
-
-                    return NodeFilter.FILTER_ACCEPT;
-                }
-            }
+            NodeFilter.SHOW_TEXT
         );
-
 
         const nodes = [];
 
         let node;
 
-        while (node = walker.nextNode()) {
+        while ((node = walker.nextNode())) {
+
+            const parent = node.parentElement;
+
+            if (!parent) {
+                continue;
+            }
+
+            const tag = parent.tagName.toLowerCase();
+
+            // No tocar scripts ni estilos
+            if (
+                tag === 'script' ||
+                tag === 'style' ||
+                tag === 'noscript'
+            ) {
+                continue;
+            }
+
             nodes.push(node);
         }
 
@@ -507,15 +535,17 @@
 
             const original = textNode.nodeValue;
 
-            const translated = translateText(original);
+            const translated = translateText(
+                original
+            );
 
             if (translated !== original) {
 
                 console.log(
-                    '[Open edX ES]',
-                    original.trim(),
+                    '[TRADUCTOR OPENEDX]',
+                    '"' + original.trim() + '"',
                     '→',
-                    translated.trim()
+                    '"' + translated.trim() + '"'
                 );
 
                 textNode.nodeValue = translated;
@@ -526,233 +556,155 @@
     }
 
 
-    // ==================================================
-    // ATRIBUTOS
-    // ==================================================
+    // =================================================
+    // TRADUCIR ATRIBUTOS
+    // =================================================
 
     function translateAttributes() {
 
-        // aria-label
-        document.querySelectorAll('[aria-label]').forEach(function (el) {
+        const selectors = [
+            '[aria-label]',
+            '[title]',
+            '[data-tooltip]',
+            '[data-submitting]'
+        ];
 
-            const original = el.getAttribute('aria-label');
+        selectors.forEach(function (selector) {
 
-            if (!original) {
-                return;
-            }
+            document
+                .querySelectorAll(selector)
+                .forEach(function (element) {
 
-            const translated = translateText(original);
+                    Array.from(
+                        element.attributes
+                    ).forEach(function (attribute) {
 
-            if (translated !== original) {
-                el.setAttribute(
-                    'aria-label',
-                    translated
-                );
-            }
+                        const name =
+                            attribute.name;
 
-        });
+                        if (
+                            name !== 'aria-label' &&
+                            name !== 'title' &&
+                            name !== 'data-tooltip' &&
+                            name !== 'data-submitting'
+                        ) {
+                            return;
+                        }
 
+                        const original =
+                            attribute.value;
 
-        // title
-        document.querySelectorAll('[title]').forEach(function (el) {
+                        const translated =
+                            translateText(original);
 
-            const original = el.getAttribute('title');
+                        if (
+                            translated !== original
+                        ) {
 
-            if (!original) {
-                return;
-            }
+                            element.setAttribute(
+                                name,
+                                translated
+                            );
 
-            const translated = translateText(original);
+                        }
 
-            if (translated !== original) {
-                el.setAttribute(
-                    'title',
-                    translated
-                );
-            }
+                    });
 
-        });
-
-
-        // data-tooltip
-        document.querySelectorAll('[data-tooltip]').forEach(function (el) {
-
-            const original = el.getAttribute('data-tooltip');
-
-            if (!original) {
-                return;
-            }
-
-            const translated = translateText(original);
-
-            if (translated !== original) {
-                el.setAttribute(
-                    'data-tooltip',
-                    translated
-                );
-            }
-
-        });
-
-
-        // data-submitting
-        document.querySelectorAll('[data-submitting]').forEach(function (el) {
-
-            const original = el.getAttribute('data-submitting');
-
-            if (!original) {
-                return;
-            }
-
-            const translated = translateText(original);
-
-            if (translated !== original) {
-                el.setAttribute(
-                    'data-submitting',
-                    translated
-                );
-            }
+                });
 
         });
 
     }
 
 
-    // ==================================================
-    // TRADUCCIÓN ESPECÍFICA DEL PROBLEM
-    // ==================================================
-
-    function translateProblem() {
-
-        // Encabezado:
-        // Single select
-        document.querySelectorAll(
-            '.problem-header'
-        ).forEach(function (el) {
-
-            const original = el.textContent.trim();
-
-            const translated = translateText(original);
-
-            if (translated !== original) {
-
-                el.textContent = translated;
-
-            }
-
-        });
-
-
-        // Show answer
-        document.querySelectorAll(
-            '.show-label'
-        ).forEach(function (el) {
-
-            const original = el.textContent.trim();
-
-            const translated = translateText(original);
-
-            if (translated !== original) {
-
-                el.textContent = translated;
-
-            }
-
-        });
-
-
-        // Correct / Incorrect
-        document.querySelectorAll(
-            '.choicegroup_correct .sr, .status .sr'
-        ).forEach(function (el) {
-
-            const original = el.textContent.trim();
-
-            const translated = translateText(original);
-
-            if (translated !== original) {
-
-                el.textContent = translated;
-
-            }
-
-        });
-
-    }
-
-
-    // ==================================================
+    // =================================================
     // FUNCIÓN PRINCIPAL
-    // ==================================================
+    // =================================================
 
     function translateOpenEdx() {
 
-        try {
+        translateTextNodes(
+            document.body
+        );
 
-            translateTextNodes(document.body);
-
-            translateAttributes();
-
-            translateProblem();
-
-        } catch (error) {
-
-            console.error(
-                '[Open edX ES] Error:',
-                error
-            );
-
-        }
+        translateAttributes();
 
     }
 
 
-    // ==================================================
-    // EJECUCIONES INICIALES
-    // ==================================================
+    // =================================================
+    // EJECUCIÓN
+    // =================================================
 
     translateOpenEdx();
 
-    setTimeout(translateOpenEdx, 300);
-    setTimeout(translateOpenEdx, 800);
-    setTimeout(translateOpenEdx, 1500);
-    setTimeout(translateOpenEdx, 3000);
-    setTimeout(translateOpenEdx, 5000);
+
+    setTimeout(
+        translateOpenEdx,
+        300
+    );
+
+    setTimeout(
+        translateOpenEdx,
+        1000
+    );
+
+    setTimeout(
+        translateOpenEdx,
+        2000
+    );
+
+    setTimeout(
+        translateOpenEdx,
+        4000
+    );
+
+    setTimeout(
+        translateOpenEdx,
+        7000
+    );
 
 
-    // ==================================================
-    // OBSERVER PARA REACT / MFE / OPENEDX
-    // ==================================================
+    // =================================================
+    // OBSERVAR REACT / MFE / OPENEDX
+    // =================================================
 
-    const observer = new MutationObserver(function () {
+    const observer = new MutationObserver(
+        function (mutations) {
 
-        translateOpenEdx();
+            let shouldTranslate = false;
 
-    });
+            mutations.forEach(function (mutation) {
+
+                if (
+                    mutation.type === 'childList' ||
+                    mutation.type === 'characterData'
+                ) {
+                    shouldTranslate = true;
+                }
+
+            });
+
+            if (shouldTranslate) {
+                translateOpenEdx();
+            }
+
+        }
+    );
 
 
-    observer.observe(document.body, {
-
-        childList: true,
-        subtree: true,
-        characterData: true
-
-    });
-
-
-    // ==================================================
-    // RESPALDO
-    // ==================================================
-
-    setInterval(function () {
-
-        translateOpenEdx();
-
-    }, 3000);
+    observer.observe(
+        document.body,
+        {
+            childList: true,
+            subtree: true,
+            characterData: true
+        }
+    );
 
 
     console.log(
-        '[Open edX ES] Traducción activada correctamente.'
+        '[TRADUCTOR OPENEDX] Observer activo'
     );
 
 })();
