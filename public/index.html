@@ -710,4 +710,48 @@
 })();
 </script>
 
+<script>
+      (function () {
+        const translations = {
+          'Course': 'Curso',
+          'Progress': 'Progreso',
+        };
+
+        function translateTitle() {
+          const titleElement = document.querySelector('title');
+
+          if (!titleElement) {
+            return;
+          }
+
+          let title = titleElement.textContent;
+
+          Object.entries(translations).forEach(([english, spanish]) => {
+            title = title.replace(
+              new RegExp(`\\b${english}\\b`, 'g'),
+              spanish,
+            );
+          });
+
+          if (titleElement.textContent !== title) {
+            titleElement.textContent = title;
+          }
+        }
+
+        // Ejecutar inicialmente
+        translateTitle();
+
+        // Detectar cambios hechos por React/Helmet
+        const observer = new MutationObserver(() => {
+          translateTitle();
+        });
+
+        observer.observe(document.head, {
+          childList: true,
+          subtree: true,
+          characterData: true,
+        });
+      }());
+    </script>
+    
 </html>
